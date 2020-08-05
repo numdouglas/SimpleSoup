@@ -1,4 +1,4 @@
-# Scrappy
+# SimpleSoup
 Academia research custom notifier
 This is a project I made so I could be notified of any freelance job postings in Academia Research which is one of the sites I freelance in ahead of the others.
 Going to the website itself and constantly refreshing is not tenable, especially with a busy schedule, while freelancing some other work or on the move.
