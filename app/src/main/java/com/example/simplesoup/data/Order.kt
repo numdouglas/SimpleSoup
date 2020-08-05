@@ -1,8 +1,6 @@
 package com.example.simplesoup.data
 
 import android.util.Log
-import androidx.lifecycle.liveData
-import kotlinx.coroutines.Dispatchers
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -39,8 +37,10 @@ class DataSource {
         var username: String = "salitosmbogz@gmail.com"
         var password: String = "dagi90210"
 
-        private val list = ArrayList<Order>()
+        private val sievedList = LinkedHashSet<Order>()
+        private val uniqueList=ArrayList<Order>()
         val idList = ArrayList<Int>()
+        val sievedOrderIds=LinkedHashSet<Int>()
         val orderList=ArrayList<Order>()
 
         fun setUpSoup():ArrayList<Order> {
@@ -91,15 +91,18 @@ class DataSource {
 
                         .containsMatchIn(row_details.toLowerCase())
                 )
-                    list.add(Order(row_details))
-                orderId?.let { idList.add(it) }
+                    sievedList.add(Order(row_details))
+                orderId?.let { sievedOrderIds.add(it) }
             }
 
-            Log.i("orders_found", list.toString())
+            Log.i("orders_found", sievedList.toString())
             Log.i("order_ids", idList.toString())
 
-
-            return list
+            uniqueList.clear()
+            uniqueList.addAll(sievedList)
+            idList.clear()
+            idList.addAll(sievedOrderIds)
+            return uniqueList
         }
 
         fun createOrdersData(orderNames: Array<String>):ArrayList<Order>{
