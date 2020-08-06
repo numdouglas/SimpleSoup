@@ -6,12 +6,11 @@ import com.example.simplesoup.data.DataSource
 import com.example.simplesoup.data.Order
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class MainsViewModel:ViewModel() {
 
-    var orders= MutableLiveData<ArrayList<Order>>()
+    var orders= MutableLiveData<LinkedHashSet<Order>>()
 
 //    var time= MutableLiveData<Int>()
 
@@ -23,5 +22,4 @@ class MainsViewModel:ViewModel() {
     fun updateOrders(){
         viewModelScope.launch(Dispatchers.IO) {
         orders.postValue(DataSource.setUpSoup())}}
-
 }

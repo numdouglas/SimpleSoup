@@ -40,10 +40,11 @@ class DataSource {
         private val sievedList = LinkedHashSet<Order>()
         private val uniqueList=ArrayList<Order>()
         val idList = ArrayList<Int>()
+        //LinkedHashSet's set property will prevent duplicity while allowing conversion back to List
         val sievedOrderIds=LinkedHashSet<Int>()
         val orderList=ArrayList<Order>()
 
-        fun setUpSoup():ArrayList<Order> {
+        fun setUpSoup():LinkedHashSet<Order> {
 
             //Have to start from homepage, same way you would navigate, we always put the next page we intend to
             //go to in the argument
@@ -91,9 +92,11 @@ class DataSource {
 
                         .containsMatchIn(row_details.toLowerCase())
                 )
+                    sievedList.clear()
                     sievedList.add(Order(row_details))
-                orderId?.let { sievedOrderIds.add(it) }
-            }
+                orderId?.let {
+                    sievedOrderIds.clear()
+                    sievedOrderIds.add(it) } }
 
             Log.i("orders_found", sievedList.toString())
             Log.i("order_ids", idList.toString())
@@ -102,7 +105,7 @@ class DataSource {
             uniqueList.addAll(sievedList)
             idList.clear()
             idList.addAll(sievedOrderIds)
-            return uniqueList
+            return sievedList
         }
 
         fun createOrdersData(orderNames: Array<String>):ArrayList<Order>{

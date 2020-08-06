@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.list_item.view.*
 
 class MainsAdapter(viewModel: MainsViewModel):RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var orders: List<Order> = ArrayList()
+    private var orders: LinkedHashSet<Order> = LinkedHashSet()
     private val viewmodel:MainsViewModel=viewModel
 
 
@@ -29,8 +29,8 @@ class MainsAdapter(viewModel: MainsViewModel):RecyclerView.Adapter<RecyclerView.
     }
 
 
-    fun submitList(ordersList:ArrayList<Order>) {
-        orders = ordersList
+    fun submitList(ordersList:LinkedHashSet<Order>) {
+        orders =ordersList
     }
 
 
@@ -47,12 +47,12 @@ class HomeViewHolder constructor(
     itemView: View):RecyclerView.ViewHolder(itemView){
 
     val myName=itemView.order_name
-
+    val ordersList=ArrayList<Order>()
 
     fun bind(viewModel: MainsViewModel,position: Int){
 
-
-        myName.text=viewModel.orders.value?.get(position)?.orderName
+        ordersList.addAll(viewModel.orders.value!!)
+        myName.text=ordersList.get(position).orderName
         }
         //myPhoto.setImageResource(person.myphoto)
     }

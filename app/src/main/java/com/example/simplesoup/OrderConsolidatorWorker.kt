@@ -28,8 +28,9 @@ class OrderConsolidatorWorker(appContext: Context, params: WorkerParameters):
 //            "Woof!","Found a new Order!")
 //        return Result.success()}
 
-        if(consolidateIds(mOrderIds,DataSource.idList)){orderNotifier.makeNotification(
-            "Arf!","Orders ONCOMING!!")
+        if(consolidateIds(mOrderIds,DataSource.idList)){
+            orderNotifier.makeNotification("Arf!","Orders ONCOMING!!")
+            mOrderIds.clear()
             mOrderIds.addAll(DataSource.idList)
         }
         return Result.success()}
