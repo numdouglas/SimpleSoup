@@ -77,7 +77,8 @@ class DataSource {
             val rows = orders.select("tr")
 
 
-
+            sievedList.clear()
+            sievedOrderIds.clear()
 
             for (row in rows) {
                 val row_details = row.text()
@@ -92,10 +93,10 @@ class DataSource {
 
                         .containsMatchIn(row_details.toLowerCase())
                 )
-                    sievedList.clear()
+
                     sievedList.add(Order(row_details))
                 orderId?.let {
-                    sievedOrderIds.clear()
+
                     sievedOrderIds.add(it) } }
 
             Log.i("orders_found", sievedList.toString())

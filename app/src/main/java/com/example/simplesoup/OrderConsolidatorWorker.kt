@@ -12,7 +12,7 @@ import java.lang.Exception
 
 class OrderConsolidatorWorker(appContext: Context, params: WorkerParameters):
     CoroutineWorker(appContext,params) {
-    val mOrderIds=ArrayList<Int>()
+    var mOrderIds=ArrayList<Int>()
     val oldOrderIds=ArrayList<Int>()
 
 
@@ -23,16 +23,15 @@ class OrderConsolidatorWorker(appContext: Context, params: WorkerParameters):
     private val orderNotifier=OrderNotifier(appContext)
     override suspend fun doWork(): Result {
         return try{
+            mOrderIds=DataSource.idList
         DataSource.setUpSoup()
 //        if(consolidateIds(mOrderIds,DataSource.idList))orderNotifier.makeNotification(
 //            "Woof!","Found a new Order!")
 //        return Result.success()}
 
         if(consolidateIds(mOrderIds,DataSource.idList)){
-            orderNotifier.makeNotification("Arf!","Orders ONCOMING!!")
-            mOrderIds.clear()
-            mOrderIds.addAll(DataSource.idList)
-        }
+            orderNotifier.makeNotification("Arf!","Difference!! originally ${mOrderIds.toString()}" +
+                    ", now ${DataSource.idList.toString()}") }
         return Result.success()}
         catch (exception: Exception){
             return Result.retry()
