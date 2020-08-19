@@ -52,7 +52,7 @@ class HomeViewHolder constructor(
     fun bind(viewModel: MainsViewModel,position: Int){
 
         ordersList.addAll(viewModel.orders.value!!)
-        myName.text=ordersList.get(position).orderName
+        myName.text= ordersList[position].orderName
         }
         //myPhoto.setImageResource(person.myphoto)
     }

@@ -1,6 +1,8 @@
 package com.example.simplesoup.data
 
+import android.content.Context
 import androidx.room.*
+import androidx.room.Database
 
 @Entity
 data class ID(
@@ -11,7 +13,7 @@ data class ID(
 @Dao
 interface idDao{
     @Query("select * from ID")
-    fun getAll():ArrayList<ID>
+    fun getAll():List<ID>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg IDs:ID)
     @Delete
@@ -23,4 +25,26 @@ interface idDao{
 @Database(entities = arrayOf(ID::class),version = 1)
 abstract class IDRepo:RoomDatabase(){
     abstract fun idDao():idDao
-}
+
+    companion object {
+        // Singleton prevents multiple instances of database opening at the
+        // same time.
+        @Volatile
+        private var INSTANCE: IDRepo? = null
+
+        fun getDatabase(context: Context): IDRepo {
+            val tempInstance = INSTANCE
+            if (tempInstance != null) {
+                return tempInstance
+            }
+            synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    IDRepo::class.java,
+                    "word_database"
+                ).build()
+                INSTANCE = instance
+                return instance
+            }
+        }
+}}
