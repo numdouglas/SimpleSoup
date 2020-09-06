@@ -4,8 +4,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.simplesoup.data.IDRepo
 import org.junit.Test
 import android.content.Context
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import com.example.simplesoup.data.DataSource
 import com.example.simplesoup.data.ID
 import com.example.simplesoup.data.idDao
 import org.hamcrest.CoreMatchers.equalTo
@@ -33,8 +35,26 @@ class DBTest {
 
     @Test
     @Throws(Exception::class)
-    fun writeUserAndReadInList() {
-         idDao.insertAll(ID(10),ID(11))
-        assertThat(idDao.getAll()[0].id, equalTo(10))
+    fun writeIDAndReadInList() {
+        idDao.insertAll(ID(67),ID(90))
+        Log.i("Remaining DB",idDao.getAll().toString())
+        idDao.delete(ID(67))
+        idDao.delete(ID(89))
+        //idDao.deleteAll()
+        Log.i("Now loading..",DataSource.setUpSoup().toString())
+        idDao.insertAll(*DataSource.idList.map { it->ID(it) }.toTypedArray())
+        idDao.insertAll(ID(54),ID(23))
+        Log.i("Remaining DB",idDao.getAll().toString())
+        idDao.deleteAllAndInsertInTransaction(ID(112),ID(239),ID(400))
+        Log.i("Remaining DB",idDao.getAll().toString())
+        assertThat(idDao.getAll()[0].id, equalTo(112))
+    }
+
+
+    @Test
+    fun deleteAndConfirm(){
+
+        idDao.deleteAll()
+        assertThat(idDao.getAll().isEmpty(), equalTo(true))
     }
 }

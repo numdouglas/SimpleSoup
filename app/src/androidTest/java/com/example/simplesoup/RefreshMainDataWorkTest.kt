@@ -11,7 +11,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.work.ListenableWorker.Result
 import androidx.work.WorkManager
 import androidx.work.testing.TestListenableWorkerBuilder
-import com.example.simplesoup.OrderConsolidatorWorker
 
 @RunWith(JUnit4::class)
 class RefreshMainDataWorkTest {

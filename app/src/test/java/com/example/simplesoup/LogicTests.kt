@@ -14,11 +14,13 @@ class LogicTests{
 
     @Test
     fun newStudentAddedPostRemoval(){
-        val students=ArrayList<String>()
-        val currentStudents=ArrayList<String>()
-        val sameStudents=ArrayList<String>()
-        students.addAll(listOf("Five","JAinme","Bill","Defodil"))
-        currentStudents.addAll(listOf("Bill","Defodi","JAinme"))
+        val students=ArrayList<Int>()
+        val currentStudents=ArrayList<Int>()
+        val sameStudents=ArrayList<Int>()
+
+
+        students.addAll(arrayListOf(2345,54327,32424))
+//        currentStudents.addAll(arrayListOf(2345,32424))
 
 
         for(Bid in students){
@@ -28,9 +30,10 @@ class LogicTests{
                 } }
         }
         currentStudents.removeAll(sameStudents)
-        println(currentStudents)
+        println("$currentStudents of size ${currentStudents.size}")
+        sameStudents.clear()
 
-        assertTrue(currentStudents.size>0)
+        assertTrue(currentStudents.isNotEmpty())
     }
     @Test
     fun hashedLinkedSetUniquenessTest(){

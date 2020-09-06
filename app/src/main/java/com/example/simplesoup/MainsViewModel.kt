@@ -1,6 +1,5 @@
 package com.example.simplesoup
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.simplesoup.data.DataSource
 import com.example.simplesoup.data.Order
@@ -19,7 +18,7 @@ class MainsViewModel:ViewModel() {
       updateOrders()
     }
 
-    fun updateOrders(){
+    private fun updateOrders(){
         viewModelScope.launch(Dispatchers.IO) {
         orders.postValue(DataSource.setUpSoup())}}
 }

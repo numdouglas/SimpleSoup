@@ -12,6 +12,7 @@ data class ID(
 
 @Dao
 interface idDao{
+    @Transaction
     @Query("select * from ID")
     fun getAll():List<ID>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -20,9 +21,15 @@ interface idDao{
     fun delete(ID:ID)
     @Query("delete from ID")
     fun deleteAll()
+    //Anything inside here runs as a single transaction
+    @Transaction
+    fun deleteAllAndInsertInTransaction(vararg  IDs:ID){
+        deleteAll()
+        insertAll(*IDs)
+    }
 }
 
-@Database(entities = arrayOf(ID::class),version = 1)
+@Database(entities = [ID::class],version = 1)
 abstract class IDRepo:RoomDatabase(){
     abstract fun idDao():idDao
 
