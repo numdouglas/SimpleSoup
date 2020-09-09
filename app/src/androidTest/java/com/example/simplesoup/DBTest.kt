@@ -5,13 +5,19 @@ import com.example.simplesoup.data.IDRepo
 import org.junit.Test
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import com.example.simplesoup.data.DataSource
 import com.example.simplesoup.data.ID
 import com.example.simplesoup.data.idDao
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
+import org.junit.Assert
 import org.junit.Before
 import org.junit.runner.RunWith
 import java.io.IOException
@@ -56,5 +62,20 @@ class DBTest {
 
         idDao.deleteAll()
         assertThat(idDao.getAll().isEmpty(), equalTo(true))
+    }
+
+    @Test
+    fun valueOfNullLiveData(){
+        val scope = CoroutineScope(Job() + Dispatchers.Main)
+
+
+
+        fun <T : Any?> MutableLiveData<T>.default(initialValue: T) = apply {
+            scope.launch{
+            value = initialValue;Log.i("AndTest","$initialValue added") }}
+        val student:MutableLiveData<String>?= MutableLiveData()
+        student?.default("Molly")
+
+        assertThat(student?.value?:return, equalTo(""))
     }
 }

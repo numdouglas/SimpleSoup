@@ -7,18 +7,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class MainsViewModel:ViewModel() {
+class MainsViewModel : ViewModel() {
 
-    var orders= MutableLiveData<LinkedHashSet<Order>>()
+    var orders: MutableLiveData<LinkedHashSet<Order>>? = MutableLiveData()
 
 //    var time= MutableLiveData<Int>()
 
     init {
         //time.value=0
-      updateOrders()
+        updateOrders()
     }
 
-    private fun updateOrders(){
+    private fun updateOrders() {
         viewModelScope.launch(Dispatchers.IO) {
-        orders.postValue(DataSource.setUpSoup())}}
+            orders?.postValue(DataSource.setUpSoup())
+        }
+    }
 }

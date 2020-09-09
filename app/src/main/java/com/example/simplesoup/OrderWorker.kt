@@ -8,15 +8,15 @@ import com.example.simplesoup.data.DataSource
 import com.example.simplesoup.data.Order
 import java.lang.Exception
 
-class OrderWorker(appContext:Context,params:WorkerParameters):CoroutineWorker(appContext,params){
-    private val orderNotifier=OrderNotifier(appContext)
-    val oldOrderIds=ArrayList<Int>()
+class OrderWorker(appContext: Context, params: WorkerParameters) :
+    CoroutineWorker(appContext, params) {
+    private val orderNotifier = OrderNotifier(appContext)
 
-    val mClassNames=ArrayList<Order>()
-    val oldClassNames=ArrayList<Order>()
+    private val mClassNames = ArrayList<Order>()
+    private val oldClassNames = ArrayList<Order>()
 
-    companion object{
-        const val WORK_NAME="OrderWorker"
+    companion object {
+        const val WORK_NAME = "OrderWorker"
     }
 
     @Override
@@ -25,31 +25,34 @@ class OrderWorker(appContext:Context,params:WorkerParameters):CoroutineWorker(ap
 
             mClassNames.addAll(DataSource.orderList)
             DataSource.setUpSoup()
-            if(consolidateIds(mClassNames,DataSource.orderList))
-            orderNotifier.makeNotification("Sniff Sniff","Excited About new Orders?")
-             return Result.success()}
-
-        catch (exception:Exception){
+            if (consolidateIds(mClassNames, DataSource.orderList))
+                orderNotifier.makeNotification("Sniff Sniff", "Excited About new Orders?")
+            return Result.success()
+        } catch (exception: Exception) {
             return Result.retry()
         }
     }
 
 
-    private fun consolidateIds(previousIds:ArrayList<Order>, currentIds:ArrayList<Order>):Boolean{
-        val updateSize:Int=currentIds.size
+    private fun consolidateIds(
+        previousIds: ArrayList<Order>,
+        currentIds: ArrayList<Order>
+    ): Boolean {
+        val updateSize: Int = currentIds.size
 
-        for(Bid in previousIds){
-            for(Sid in currentIds){
-                if(Sid == Bid){
+        for (Bid in previousIds) {
+            for (Sid in currentIds) {
+                if (Sid == Bid) {
                     //oldOrderIds.add(Sid)
                     oldClassNames.add(Sid)
-                } }
+                }
+            }
         }
-        Log.i("Consolidated IDs",currentIds.toString())
+        Log.i("Consolidated IDs", currentIds.toString())
 
 //        currentIds.removeAll(oldOrderIds)
         currentIds.removeAll(oldClassNames)
 
-        return (currentIds.size>0)
+        return (currentIds.size > 0)
     }
 }

@@ -3,20 +3,14 @@ package com.example.simplesoup
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
-import com.example.simplesoup.data.DataSource
-import com.example.simplesoup.data.ID
-import com.example.simplesoup.data.IDRepo
 import com.example.simplesoup.databinding.ActivityMainBinding
+import com.example.simplesoup.utils.isConnected
 import kotlinx.coroutines.*
-import java.lang.NullPointerException
-import java.lang.Thread.sleep
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -24,49 +18,39 @@ class MainActivity : AppCompatActivity() {
     lateinit var viewModel: MainsViewModel
     private lateinit var mainsAdapter: MainsAdapter
     private val appScope = CoroutineScope(Dispatchers.IO)
-    private lateinit var ordersNow:List<ID>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewModel = ViewModelProvider
-            .AndroidViewModelFactory
-            .getInstance(application)
-            .create(MainsViewModel::class.java)
+        this.isConnected.let {
+            viewModel = ViewModelProvider
+                .AndroidViewModelFactory
+                .getInstance(application)
+                .create(MainsViewModel::class.java)
+        }
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         initRecyclerView()
 
-        viewModel.orders.observe(this, Observer {
-            try {
-                mainsAdapter.submitList(it!!)
-            } catch (e: NullPointerException) {
+        viewModel.orders?.observe(this, Observer {
+            /*Diff's submitList will compare lists and update at precise position
+            in case it detects change */
+            it?.let {
+                mainsAdapter.submitList(it.toList())
             }
-            mainsAdapter.notifyDataSetChanged()
+            //unnecessary
+            //catch (e: NullPointerException) {}
+            //Panics and fires that all data is invalid making it necessary to rebind
+            //mainsAdapter.notifyDataSetChanged()
         })
         scheduleRepeatRequest()
-
-       val scope = CoroutineScope(Job() + Dispatchers.IO)
-
-
-        scope.launch{
-
-            ordersNow=IDRepo.getDatabase(applicationContext)
-                .idDao().getAll()
-            Log.i("Current","$ordersNow and ${DataSource.idList}"
-
-            )
-
-        }
-        sleep(6313)
-        Toast.makeText(applicationContext,"Spotting $ordersNow and ${DataSource.idList}",Toast.LENGTH_LONG).show()
     }
 
 
     private fun initRecyclerView() {
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(this@MainActivity.applicationContext)
-            mainsAdapter = MainsAdapter(viewModel)
+            mainsAdapter = MainsAdapter()
             adapter = mainsAdapter
         }
     }
@@ -89,4 +73,4 @@ class MainActivity : AppCompatActivity() {
             )
         }
     }
-    }
+}

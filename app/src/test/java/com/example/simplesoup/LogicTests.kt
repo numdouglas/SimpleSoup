@@ -2,6 +2,8 @@ package com.example.simplesoup
 
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.simplesoup.data.Order
 import org.junit.Test
 import org.junit.Assert.*
@@ -46,8 +48,7 @@ class LogicTests{
         orders.add(Order("Report"))
 
         uniqueOrders.addAll(orders)
-        System.out.println("orders $uniqueOrders.toString()")
+        println("orders $uniqueOrders.toString()")
         assertEquals(orders.size,3)
     }
-
 }
