@@ -48,7 +48,16 @@ class LogicTests{
         orders.add(Order("Report"))
 
         uniqueOrders.addAll(orders)
-        println("orders $uniqueOrders.toString()")
+        println("orders $uniqueOrders.")
         assertEquals(orders.size,3)
+    }
+
+    @Test
+    fun bitWiseComparisonTest(){
+        val upperNumbers:IntArray = intArrayOf(1,2,4)
+        val lowerNumbers:IntArray = intArrayOf(2,3,4)
+
+        println(upperNumbers.toString())
+        assertEquals(upperNumbers.hashCode() and lowerNumbers.hashCode(),2)
     }
 }

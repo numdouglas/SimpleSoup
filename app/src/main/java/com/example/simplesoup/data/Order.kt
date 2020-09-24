@@ -3,6 +3,7 @@ package com.example.simplesoup.data
 import android.util.Log
 import org.jsoup.Connection
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 
 data class Order(
     var orderName: String
@@ -23,10 +24,10 @@ class DataSource {
             "Mozilla/5.0 (Linux; Android 8.0.0; moto g(6) play Build/OPP27.91-87; pt-br) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.111 Mobile Safari/537.36 Puffin/7.5.3.20547AP";
 
 
-        var loginFormUrl = "https://writers.academia-research.com/index.php?r=account%2Flogin"
+        private const val loginFormUrl = "https://writers.academia-research.com/index.php?r=account%2Flogin"
 
-        var username: String = "salitosmbogz@gmail.com"
-        var password: String = "dagi90210"
+        private const val username: String = "salitosmbogz@gmail.com"
+        private const val password: String = "dagi90210"
 
         private val sievedList = LinkedHashSet<Order>()
         private val uniqueList = ArrayList<Order>()
@@ -36,23 +37,28 @@ class DataSource {
         private val sievedOrderIds = LinkedHashSet<Int>()
         val orderList = ArrayList<Order>()
 
+
+
         fun setUpSoup(): LinkedHashSet<Order> {
 
-            //Have to start from homepage, same way you would navigate, we always put the next page we intend to
-            //go to in the argument
-            val loginForm =
-                Jsoup.connect(loginFormUrl).method(Connection.Method.GET)
-                    .userAgent(USER_AGENT).execute()
-            loginForm.parse() // this is the document that contains response html
+            //No need for expensive login if we have a cookie
+            if (cookies.isEmpty()) {
+                Log.i("COOKIES","No Nubbins, Restart!!!")
+                //Have to start from homepage, same way you would navigate, we always put the next page we intend to
+                //go to in the argument
+                val loginForm =
+                    Jsoup.connect(loginFormUrl).method(Connection.Method.GET)
+                        .userAgent(USER_AGENT).execute()
+                loginForm.parse() // this is the document that contains response html
 
-            formData["LoginForm[login]"] = username
-            formData["LoginForm[password]"] = password
-            formData["Timezone[offset]"] = "3"
-            formData["Timezone[name]"] = "Africa/Nairobi"
-
-            cookies.putAll(loginForm.cookies()) // save the cookies, this will be passed on to next request
+                formData["LoginForm[login]"] = username
+                formData["LoginForm[password]"] = password
+                formData["Timezone[offset]"] = "3"
+                formData["Timezone[name]"] = "Africa/Nairobi"
 
 
+                cookies.putAll(loginForm.cookies()) // save the cookies, this will be passed on to next request
+                }
             val homePage =
                 Jsoup.connect(loginFormUrl)
                     .cookies(cookies)
@@ -64,7 +70,9 @@ class DataSource {
 
 
             val orders =
-                homePage.select("html body div.academy-red div.b-page-container.b-page-container_flex div.b-page-right div div#orderList div#w0.grid-view table.table.table-striped.table-orders tbody")
+                homePage
+                    .select("html body div.academy-red div.b-page-container.b-page-container_flex div.b-page-right div#orderList div#w0.grid-view table.b-table.b-table_orders tbody")
+                    //.select("html body div.academy-red div.b-page-container.b-page-container_flex div.b-page-right div div#orderList div#w0.grid-view table.table.table-striped.table-orders tbody")
             val rows = orders.select("tr")
 
 
@@ -101,6 +109,5 @@ class DataSource {
             idList.addAll(sievedOrderIds)
             return sievedList
         }
-
     }
 }
