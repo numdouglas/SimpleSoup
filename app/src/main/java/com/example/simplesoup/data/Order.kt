@@ -26,8 +26,8 @@ class DataSource {
 
         private const val loginFormUrl = "https://writers.academia-research.com/index.php?r=account%2Flogin"
 
-        private const val username: String = "salitosmbogz@gmail.com"
-        private const val password: String = "dagi90210"
+        private const val username: String = "XXXXXXXXXXX"
+        private const val password: String = "XXXXXXXXXXX"
 
         private val sievedList = LinkedHashSet<Order>()
         private val uniqueList = ArrayList<Order>()
